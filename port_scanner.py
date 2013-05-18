@@ -25,7 +25,7 @@ if len(args) > 2:
 total_ports_to_scan = len(xrange(low_port,high_port +1))
 if options.threads > (total_ports_to_scan / 10) + 1:
   op.error('number of threads is overkill for the number of ports we\'re scanning...')
-host = args[0]
+host = socket.getaddrinfo(args[0],80)[0][4][0]
 threads = options.threads
 timeout = options.timeout
 verbose = options.verbose
