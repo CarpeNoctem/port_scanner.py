@@ -31,6 +31,7 @@ timeout = options.timeout
 verbose = options.verbose
 
 open_ports = []
+child_msgs = []
 scanned = 0
 ports_per_thread = total_ports_to_scan / threads
 
@@ -39,26 +40,22 @@ class Child(threading.Thread):
     self.prange = prange
     threading.Thread.__init__(self)
   def run(self):
-    global host,open_ports,timeout,verbose, scanned
+    global host,open_ports,timeout,verbose,scanned,child_msgs
     self.h = host
     self.t = timeout
     self.v = verbose
     self.o = []
     self.s = 0
     for port in xrange(self.prange[0],self.prange[-1] + 1):
-      if self.v > 1:
-        print 'scanning port ' + str(port) + ': ',
       client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
       client.settimeout(self.t)
       try:
         client.connect((self.h,port))
         self.o.append(port)
-        if self.v > 1:
-          print 'OPEN'
+        child_msgs.append('scanning port ' + str(port) + ': ' + 'OPEN')
         client.close()
       except socket.error:
-        if self.v > 1:
-          print 'closed'
+        child_msgs.append('scanning port ' + str(port) + ': ' + 'closed')
         client.close()
       self.s += 1
     open_ports.extend(self.o)
@@ -78,6 +75,10 @@ try:
   if verbose > 0:
     print 'Waiting for ' + str(active - 1) + ' threads to finish...'
   while active > 1:
+    if verbose > 1:
+        while (len(child_msgs) > 0):
+            print child_msgs.pop() #yes, we're not printing in the order the child messages were created, 
+                                   #but this is quicker and order doesn't necessarily matter when multi-threadded..
     if active != last_active:
       last_active = active
       if verbose > 0:
