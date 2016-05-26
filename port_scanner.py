@@ -85,6 +85,7 @@ try:
         print 'Waiting for ' + str(active - 1) + ' threads to finish...'
     active = threading.active_count()
 
+  open_ports.sort()
   print '\nFinished scan for ' + host + '.\nTotal ports scanned: ' + str(scanned) + '\nOpen ports:\n' + str(open_ports)
 except Exception:
   print '\nExiting.'
