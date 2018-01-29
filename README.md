@@ -22,3 +22,6 @@ Options:
                         number of threads to use. default 1.
   -v, --verbose         increase verbosity.
 ```
+
+Hi there! I've recently written a version of this in Go (golang). Feel free to check it out here:
+https://github.com/CarpeNoctem/port_scanner.go
